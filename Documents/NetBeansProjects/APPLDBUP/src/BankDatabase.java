@@ -28,7 +28,8 @@ public class BankDatabase {
       else {
          return false; // account number not found, so return false
       }
-   } 
+   }
+   
    private boolean isAdmin(int accountNumber) {
       for(Account x : this.accounts){
           if(x.getAccountNumber()==accountNumber){
@@ -37,6 +38,21 @@ public class BankDatabase {
       }
       return false; // if no matching account was found, return null
    }
+   
+       public Account checkAccountDest(int userAccountNumberDest) {
+        for (Account x : this.accounts) {
+            if (x.getAccountNumber() == userAccountNumberDest) {
+                return x;
+            }
+        }
+    return null;
+    }
+    
+    public void transferToAccount(int userAccountNumberSource, int userAccountNumberDest, double amount) { 
+        credit(userAccountNumberSource, amount);
+        debit(userAccountNumberDest, amount);
+    }
+   
    public double getAvailableBalance(int userAccountNumber) {
       return getAccount(userAccountNumber).getAvailableBalance();
    } 
