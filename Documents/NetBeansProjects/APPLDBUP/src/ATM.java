@@ -1,6 +1,8 @@
 
-public class ATM {
+import java.util.ArrayList;
 
+public class ATM {
+    
     private boolean userAuthenticated; // whether user is authenticated
     private int currentAccountNumber; // current user's account number
     private Screen screen; // ATM's screen
@@ -14,8 +16,12 @@ public class ATM {
     private static final int BALANCE_INQUIRY = 1;
     private static final int WITHDRAWAL = 2;
     private static final int DEPOSIT = 3;
+
     private static final int TRANSFER = 5;
     private static final int EXIT = 7;
+
+    private static final int HISTORY = 6;
+
 
     // no-argument ATM constructor initializes instance variables
     public ATM() {
@@ -38,7 +44,7 @@ public class ATM {
                 screen.displayMessageLine("\nWelcome!");
                 authenticateUser(); // authenticate user
             }
-
+            
             performTransactions(); // user is now authenticated
             userAuthenticated = false; // reset before next ATM session
             currentAccountNumber = 0; // reset before next ATM session
@@ -71,7 +77,7 @@ public class ATM {
     private void performTransactions() {
         // local variable to store transaction currently being processed
         Transaction currentTransaction = null;
-
+        
         boolean userExited = false; // user has not chosen to exit
 
         // loop while user has not chosen option to exit system
@@ -105,12 +111,24 @@ public class ATM {
                         currentTransaction
                                 = createTransaction(mainMenuSelection);
                         currentTransaction.execute();
-
+                        
                         break;
                     case DEPOSIT:
                         currentTransaction
                                 = createTransaction(mainMenuSelection);
                         currentTransaction.execute();
+                        break;
+                    case HISTORY:
+                        ArrayList<History> histories = bankDatabase.getHistories(currentAccountNumber);
+                        if (histories != null) {
+                            for (History history : histories) {
+                                screen.displayMessage(history.getKeterangan() + " ");
+                                screen.displayDollarAmount(history.getAmount());
+                                screen.displayMessageLine("");
+                            }
+                        } else {
+                            screen.displayMessageLine("You don't have any previous transaction..");
+                        }
                         break;
                     case TRANSFER:
                         currentTransaction
@@ -151,10 +169,10 @@ public class ATM {
         }
         return keypad.getInput(); // return user's selection
     }
-
+    
     private Transaction createTransaction(int type) {
         Transaction temp = null;
-
+        
         switch (type) {
             case BALANCE_INQUIRY:
                 temp = new BalanceInquiry(
@@ -170,7 +188,7 @@ public class ATM {
                 temp = new Transfer(currentAccountNumber, screen, bankDatabase, keypad);
                 break;
         }
-
+        
         return temp;
     }
 }
