@@ -1,4 +1,14 @@
 public class Account {
+
+    /**
+     * @return the blocked
+     */
+    
+
+    /**
+     * @param blocked the blocked to set
+     */
+    
    private int accountNumber; // account number
    private int pin; // PIN for authentication
    private double availableBalance; // funds available for withdrawal
@@ -23,7 +33,7 @@ public class Account {
          return true;
       }
       else {
-         return true;
+         return false;
       }
    } 
 
@@ -52,4 +62,16 @@ public class Account {
    public boolean getAdmin() {
       return admin;  
    }
+   
+   public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+   
+   public void setPin(int pin) {
+        this.pin = pin;
+    }
+   
+   public boolean isBlocked() {
+        return blocked;
+    }
 } 

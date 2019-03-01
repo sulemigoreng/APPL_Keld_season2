@@ -8,7 +8,7 @@ public class BankDatabase {
       accounts[2] = new Account(0, 0, 0, 0,true); 
    }
    
-   private Account getAccount(int accountNumber) {
+   Account getAccount(int accountNumber) {
       for(Account x : this.accounts){
           if(x.getAccountNumber()==accountNumber){
               return x;
