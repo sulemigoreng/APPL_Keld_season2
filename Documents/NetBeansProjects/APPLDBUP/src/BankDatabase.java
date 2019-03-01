@@ -29,7 +29,7 @@ public class BankDatabase {
          return false; // account number not found, so return false
       }
    } 
-   private boolean isAdmin(int accountNumber) {
+   public boolean isAdmin(int accountNumber) {
       for(Account x : this.accounts){
           if(x.getAccountNumber()==accountNumber){
               return x.getAdmin();

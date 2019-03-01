@@ -14,7 +14,9 @@ public class ATM {
     private static final int BALANCE_INQUIRY = 1;
     private static final int WITHDRAWAL = 2;
     private static final int DEPOSIT = 3;
-    private static final int EXIT = 4;
+    private static final int EXIT = 7;
+    private static final int DISPLAY_DISPENSER = 3;
+    private static final int ADD_DISPENSER = 4;
 
     // no-argument ATM constructor initializes instance variables
     public ATM() {
@@ -22,7 +24,7 @@ public class ATM {
         currentAccountNumber = 0; // no current account number to start
         screen = new Screen(); // create screen
         keypad = new Keypad(); // create keypad 
-        cashDispenser = new CashDispenser(); // create cash dispenser
+        cashDispenser = new CashDispenser(screen); // create cash dispenser
         bankDatabase = new BankDatabase(); // create acct info database
         ATMDepositSlot = new DepositSlot();
         admin = false;
@@ -58,6 +60,7 @@ public class ATM {
 
         // check whether authentication succeeded
         if (userAuthenticated) {
+            admin = bankDatabase.isAdmin(accountNumber);
             currentAccountNumber = accountNumber; // save user's account #
         } else {
             screen.displayMessageLine(
@@ -76,9 +79,17 @@ public class ATM {
         while (!userExited) {
             // show main menu and get user selection
             int mainMenuSelection = displayMainMenu();
-            if (!admin) {
+            if (admin) {
                 // decide how to proceed based on user's menu selection
                 switch (mainMenuSelection) {
+                    case DISPLAY_DISPENSER:
+                        cashDispenser.displayDispenser();
+                        break;
+                    case ADD_DISPENSER:
+                        screen.displayMessage("Please insert a number to cash dispenser : ");
+                        double tambah = keypad.getInput();
+                        cashDispenser.addCashDispenser(tambah);
+                        break;
                     case EXIT: // user chose to terminate session
                         screen.displayMessageLine("\nExiting the system...");
                         userExited = true; // this ATM session should end
@@ -139,6 +150,7 @@ public class ATM {
             screen.displayMessageLine("3 - Lihat Uang Dispenser");
             screen.displayMessageLine("4 - Tambah Uang Dispenser");
             screen.displayMessageLine("5 - Validasi Deposit\n");
+            screen.displayMessageLine("6 - Exit\n");
             screen.displayMessage("Enter a choice: ");
         }
         return keypad.getInput(); // return user's selection
