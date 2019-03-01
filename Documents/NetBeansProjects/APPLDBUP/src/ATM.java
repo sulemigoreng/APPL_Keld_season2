@@ -14,7 +14,8 @@ public class ATM {
     private static final int BALANCE_INQUIRY = 1;
     private static final int WITHDRAWAL = 2;
     private static final int DEPOSIT = 3;
-    private static final int EXIT = 4;
+    private static final int TRANSFER = 5;
+    private static final int EXIT = 7;
 
     // no-argument ATM constructor initializes instance variables
     public ATM() {
@@ -59,6 +60,7 @@ public class ATM {
         // check whether authentication succeeded
         if (userAuthenticated) {
             currentAccountNumber = accountNumber; // save user's account #
+            admin = bankDatabase.isAdmin(accountNumber);
         } else {
             screen.displayMessageLine(
                     "Invalid account number or PIN. Please try again.");
@@ -76,7 +78,7 @@ public class ATM {
         while (!userExited) {
             // show main menu and get user selection
             int mainMenuSelection = displayMainMenu();
-            if (!admin) {
+            if (admin) {
                 // decide how to proceed based on user's menu selection
                 switch (mainMenuSelection) {
                     case EXIT: // user chose to terminate session
@@ -110,6 +112,11 @@ public class ATM {
                                 = createTransaction(mainMenuSelection);
                         currentTransaction.execute();
                         break;
+                    case TRANSFER:
+                        currentTransaction
+                                = createTransaction(mainMenuSelection);
+                        currentTransaction.execute();
+                        break;
                     case EXIT: // user chose to terminate session
                         screen.displayMessageLine("\nExiting the system...");
                         userExited = true; // this ATM session should end
@@ -130,7 +137,8 @@ public class ATM {
             screen.displayMessageLine("1 - View my balance");
             screen.displayMessageLine("2 - Withdraw cash");
             screen.displayMessageLine("3 - Deposit funds");
-            screen.displayMessageLine("4 - Exit\n");
+            screen.displayMessageLine("5 - Transfer");
+            screen.displayMessageLine("7 - Exit\n");
             screen.displayMessage("Enter a choice: ");
         } else {
             screen.displayMessageLine("\nMain menu:");
@@ -157,6 +165,9 @@ public class ATM {
                 break;
             case DEPOSIT:
                 temp = new Deposit(currentAccountNumber, screen, bankDatabase, keypad, ATMDepositSlot);
+                break;
+            case TRANSFER:
+                temp = new Transfer(currentAccountNumber, screen, bankDatabase, keypad);
                 break;
         }
 

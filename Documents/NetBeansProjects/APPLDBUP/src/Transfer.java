@@ -27,11 +27,11 @@ public class Transfer extends Transaction {
     public void execute() {
         BankDatabase bankDatabase = getBankDatabase();
         Screen screen = getScreen();
-        
+
         this.userAccountDest = promptUserAccountDest();
         this.amount = promptForTransferAmount();
-        
-        if(userAccountDest != null) {
+
+        if (userAccountDest != null) {
             bankDatabase.transferToAccount(getAccountNumber(),
                     userAccountDest.getAccountNumber(), amount);
         }
@@ -55,7 +55,7 @@ public class Transfer extends Transaction {
     private Account promptUserAccountDest() {
         int userAccountNumberDest;
         Screen screen = getScreen();
-        
+
         screen.displayMessageLine("\nPlease enter the destination account number "
                 + "(or 0 to cancel): ");
         userAccountNumberDest = keypad.getInput();
