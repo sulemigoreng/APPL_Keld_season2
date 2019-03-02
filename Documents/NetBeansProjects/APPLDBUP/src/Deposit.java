@@ -3,6 +3,7 @@ public class Deposit extends Transaction {
    private Keypad keypad; // reference to keypad
    private DepositSlot depositSlot; // reference to deposit slot
    private final static int CANCELED = 0; // constant for cancel option
+   private boolean sValid;
 
    // Deposit constructor
    public Deposit(int userAccountNumber, Screen atmScreen, 
@@ -13,8 +14,16 @@ public class Deposit extends Transaction {
       super(userAccountNumber, atmScreen, atmBankDatabase);
       keypad = atmKeypad;
       depositSlot = atmDepositSlot;
-   } 
-
+      sValid = false;
+   }
+   public boolean isValid(){
+    return sValid;
+    }
+   public void validate(double amount){
+       BankDatabase bankDatabase = getBankDatabase();
+       sValid = depositSlot.isEnvelopeReceived();
+       bankDatabase.validate(super.getAccountNumber(), amount);
+   }
    // perform transaction
    @Override
    public void execute() {
@@ -23,7 +32,7 @@ public class Deposit extends Transaction {
        amount = promptForDepositAmount();
        screen.displayMessageLine("Please insert a deposit envelope containing $"+amount+".");
        if(depositSlot.isEnvelopeReceived()){
-           bankDatabase.debit(super.getAccountNumber(), amount);
+           bankDatabase.debit(super.getAccountNumber(), amount, this);
            screen.displayMessageLine("Your envelope has been received.");
            screen.displayMessageLine("NOTE: The money just deposited will not be available until we verify the amount of any enclosed cash and your checks clear.");
        }else{

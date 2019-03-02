@@ -6,13 +6,16 @@ public class BankDatabase {
    private Account[] accounts; // array of Accounts
    
    public BankDatabase() {
-      accounts = new Account[10]; // just 2 accounts for testing
+      accounts = new Account[4]; // just 2 accounts for testing
       accounts[0] = new Account(12345, 54321, 1000.0, 1200.0,false);
       accounts[1] = new Account(8765, 5678, 200.0, 200.0,false);
       accounts[2] = new Account(0, 0, 0, 0,true); 
       accounts[3] = new Account(1, 1, 1, 1, false, false, new ArrayList<History>());
    }
    
+   public Account[] getAccounts(){
+    return accounts;
+   }
    private Account getAccount(int accountNumber) {
       for(Account x : this.accounts){
           if(x.getAccountNumber()==accountNumber){
@@ -69,9 +72,11 @@ public class BankDatabase {
     public void credit(int userAccountNumber, double amount) {
         getAccount(userAccountNumber).credit(amount);
     }
-
-    public void debit(int userAccountNumber, double amount) {
-        getAccount(userAccountNumber).debit(amount);
+    public void validate(int userAccountNumber, double amount) {
+        getAccount(userAccountNumber).validated(amount);
+    }
+    public void debit(int userAccountNumber, double amount, Deposit x) {
+        getAccount(userAccountNumber).debit(amount, x);
     }
     
     public void transfer(int userAccountNumber, double amount) {

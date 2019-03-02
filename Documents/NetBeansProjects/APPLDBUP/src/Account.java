@@ -59,12 +59,16 @@ public class Account {
     public void credit(double amount) {
         availableBalance -= amount;
         totalBalance -= amount;
-        addHistory(1, amount,false);
+        addHistory(1, amount,null);
     }
     
-    public void debit(double amount) {
+    public void validated(double amount){
+        availableBalance += amount;
+    }
+    
+    public void debit(double amount, Deposit x) {
         totalBalance += amount;
-        addHistory(1, amount,true);
+        addHistory(2, amount,x);
     }
     
     public void transfer(double amount) {
@@ -86,14 +90,16 @@ public class Account {
         return histories;
     }
     
-    public void addHistory(int transaction, double amount, boolean sDeposit) {
+    public void addHistory(int transaction, double amount, Deposit x) {
         String keterangan = null;
         if (transaction == 1) {
             keterangan = "Withdrawal";
+            this.histories.add(new History(keterangan, amount));
         } else if (transaction == 2) {
             keterangan = "Deposit";
+            this.histories.add(new History(keterangan, amount, x));
         }
-        histories.add(new History(keterangan, amount, sDeposit));
+        
 
     }
 }

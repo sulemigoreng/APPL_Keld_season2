@@ -2,7 +2,7 @@
 import java.util.ArrayList;
 
 public class ATM {
-    
+
     private boolean userAuthenticated; // whether user is authenticated
     private int currentAccountNumber; // current user's account number
     private Screen screen; // ATM's screen
@@ -21,7 +21,6 @@ public class ATM {
     private static final int EXIT = 7;
 
     private static final int HISTORY = 6;
-
 
     // no-argument ATM constructor initializes instance variables
     public ATM() {
@@ -44,7 +43,7 @@ public class ATM {
                 screen.displayMessageLine("\nWelcome!");
                 authenticateUser(); // authenticate user
             }
-            
+
             performTransactions(); // user is now authenticated
             userAuthenticated = false; // reset before next ATM session
             currentAccountNumber = 0; // reset before next ATM session
@@ -77,7 +76,7 @@ public class ATM {
     private void performTransactions() {
         // local variable to store transaction currently being processed
         Transaction currentTransaction = null;
-        
+
         boolean userExited = false; // user has not chosen to exit
 
         // loop while user has not chosen option to exit system
@@ -87,6 +86,11 @@ public class ATM {
             if (admin) {
                 // decide how to proceed based on user's menu selection
                 switch (mainMenuSelection) {
+                    case 5:
+                        screen.displayMessage("Input Account Number = ");
+                        int acc = keypad.getInput();
+                        validateDeposit(acc);
+                    break;
                     case EXIT: // user chose to terminate session
                         screen.displayMessageLine("\nExiting the system...");
                         userExited = true; // this ATM session should end
@@ -111,7 +115,7 @@ public class ATM {
                         currentTransaction
                                 = createTransaction(mainMenuSelection);
                         currentTransaction.execute();
-                        
+
                         break;
                     case DEPOSIT:
                         currentTransaction
@@ -148,6 +152,27 @@ public class ATM {
         }
     }
 
+    private void validateDeposit(int acc) {
+                int a=1;
+                ArrayList<History> histories = bankDatabase.getHistories(acc);
+                if (histories != null) {
+                    for (History history : histories) {
+                        screen.displayMessage("Number "+a+" (");
+                        screen.displayMessage("" + acc + " - ");
+                        screen.displayMessage("" + history.getDeposit().isValid() + " - ");
+                        screen.displayDollarAmount(history.getAmount());
+                        screen.displayMessageLine(")");
+                        a++;
+                    }
+                screen.displayMessage("Input the number beside the deposit history that you would like to validate = ");
+                int key = keypad.getInput();
+                History h_validate = histories.get(key-1);
+                h_validate.getDeposit().validate(h_validate.getAmount());
+                } else {
+                    screen.displayMessageLine("You don't have any previous transaction..");
+                }
+    }
+
     // display the main menu and return an input selection
     private int displayMainMenu() {
         if (!admin) {
@@ -169,10 +194,10 @@ public class ATM {
         }
         return keypad.getInput(); // return user's selection
     }
-    
+
     private Transaction createTransaction(int type) {
         Transaction temp = null;
-        
+
         switch (type) {
             case BALANCE_INQUIRY:
                 temp = new BalanceInquiry(
@@ -188,7 +213,7 @@ public class ATM {
                 temp = new Transfer(currentAccountNumber, screen, bankDatabase, keypad);
                 break;
         }
-        
+
         return temp;
     }
 }
