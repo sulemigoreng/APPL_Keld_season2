@@ -23,7 +23,6 @@ public class ATM {
 
     private static final int HISTORY = 6;
     private static final int CHANGEPIN = 4;
-    private static final int EXIT = 6;
 
     // no-argument ATM constructor initializes instance variables
     public ATM() {
@@ -72,10 +71,6 @@ public class ATM {
         acc = bankDatabase.getAccount(accountNumber);
 
         // check whether authentication succeeded
-        if (userAuthenticated) {
-            currentAccountNumber = accountNumber; // save user's account #
-            admin = bankDatabase.isAdmin(accountNumber);
-        } else {
         if (acc != null) {
             userAuthenticated = bankDatabase.authenticateUser(accountNumber, pin);
 
@@ -103,11 +98,13 @@ public class ATM {
             // check whether authentication succeeded
             if (userAuthenticated) {
                 currentAccountNumber = accountNumber; // save user's account #
+                admin = bankDatabase.isAdmin(accountNumber);
+            } else if (acc == null) {
+                screen.displayMessageLine(
+                        "Invalid account number or PIN. Please try again.");
             }
-        } else if(acc == null) {
-            screen.displayMessageLine(
-                    "Invalid account number or PIN. Please try again.");
         }
+
     }
 
     private void unblockUser() {
@@ -135,7 +132,7 @@ public class ATM {
         do {
             screen.displayMessage("\nPlease Insert New Account Number: ");
             newAccountNumber = keypad.getInput();
-            if (bankDatabase.isExists(newAccountNumber)){
+            if (bankDatabase.isExists(newAccountNumber)) {
                 screen.displayMessageLine("The Account Already Exist");
             }
         } while (bankDatabase.isExists(newAccountNumber));
@@ -164,8 +161,7 @@ public class ATM {
                         screen.displayMessage("Input Account Number = ");
                         int acc = keypad.getInput();
                         validateDeposit(acc);
-                    break;
-                    case EXIT: // user chose to terminate session
+                        break;
                     case 1: //Unblock Account
                         unblockUser();
                         break;
@@ -206,6 +202,8 @@ public class ATM {
                         break;
                     case CHANGEPIN:
                         currentTransaction = createTransaction(mainMenuSelection);
+                        currentTransaction.execute();
+                        break;
                     case HISTORY:
                         ArrayList<History> histories = bankDatabase.getHistories(currentAccountNumber);
                         if (histories != null) {
@@ -237,24 +235,24 @@ public class ATM {
     }
 
     private void validateDeposit(int acc) {
-                int a=1;
-                ArrayList<History> histories = bankDatabase.getHistories(acc);
-                if (histories != null) {
-                    for (History history : histories) {
-                        screen.displayMessage("Number "+a+" (");
-                        screen.displayMessage("" + acc + " - ");
-                        screen.displayMessage("" + history.getDeposit().isValid() + " - ");
-                        screen.displayDollarAmount(history.getAmount());
-                        screen.displayMessageLine(")");
-                        a++;
-                    }
-                screen.displayMessage("Input the number beside the deposit history that you would like to validate = ");
-                int key = keypad.getInput();
-                History h_validate = histories.get(key-1);
-                h_validate.getDeposit().validate(h_validate.getAmount());
-                } else {
-                    screen.displayMessageLine("You don't have any previous transaction..");
-                }
+        int a = 1;
+        ArrayList<History> histories = bankDatabase.getHistories(acc);
+        if (histories != null) {
+            for (History history : histories) {
+                screen.displayMessage("Number " + a + " (");
+                screen.displayMessage("" + acc + " - ");
+                screen.displayMessage("" + history.getDeposit().isValid() + " - ");
+                screen.displayDollarAmount(history.getAmount());
+                screen.displayMessageLine(")");
+                a++;
+            }
+            screen.displayMessage("Input the number beside the deposit history that you would like to validate = ");
+            int key = keypad.getInput();
+            History h_validate = histories.get(key - 1);
+            h_validate.getDeposit().validate(h_validate.getAmount());
+        } else {
+            screen.displayMessageLine("You don't have any previous transaction..");
+        }
     }
 
     // display the main menu and return an input selection
@@ -264,10 +262,10 @@ public class ATM {
             screen.displayMessageLine("1 - View my balance");
             screen.displayMessageLine("2 - Withdraw cash");
             screen.displayMessageLine("3 - Deposit funds");
-            screen.displayMessageLine("5 - Transfer");
-            screen.displayMessageLine("7 - Exit\n");
             screen.displayMessageLine("4 - Change PIN");
+            screen.displayMessageLine("5 - Transfer");
             screen.displayMessageLine("6 - Exit\n");
+            screen.displayMessageLine("7 - Exit\n");
 
             screen.displayMessage("Enter a choice: ");
         } else {

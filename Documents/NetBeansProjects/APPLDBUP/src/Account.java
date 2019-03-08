@@ -13,7 +13,7 @@ public class Account {
 
     // Account constructor initializes attributes
     public Account(int theAccountNumber, int thePIN,
-            double theAvailableBalance, double theTotalBalance,boolean blocked, boolean admin, ArrayList<History> histories) {
+            double theAvailableBalance, double theTotalBalance, boolean blocked, boolean admin, ArrayList<History> histories) {
         accountNumber = theAccountNumber;
         pin = thePIN;
         availableBalance = theAvailableBalance;
@@ -27,16 +27,6 @@ public class Account {
         this.admin = admin;
     }
     // Account constructor initializes attributes
-   // determines whether a user-specified PIN matches PIN in Account
-   public boolean validatePIN(int userPIN) {
-      if (userPIN == pin) {
-         return true;
-      }
-      else {
-         return false;
-      }
-   } 
-
     // determines whether a user-specified PIN matches PIN in Account
     public boolean validatePIN(int userPIN) {
         if (userPIN == pin) {
@@ -57,6 +47,10 @@ public class Account {
 
     }
 
+    public boolean isBlocked() {
+        return blocked;
+    }
+
     public void credit(double amount) {
         availableBalance -= amount;
         totalBalance -= amount;
@@ -66,7 +60,7 @@ public class Account {
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
     }
-    
+
     public void validated(double amount) {
         availableBalance += amount;
     }
@@ -105,23 +99,9 @@ public class Account {
         }
 
     }
-}
-   public int getAccountNumber() {
-      return accountNumber;  
-   }
-   public boolean getAdmin() {
-      return admin;  
-   }
-   
-   public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
-    }
-   
-   public void setPin(int pin) {
+
+    public void setPin(int pin) {
         this.pin = pin;
     }
-   
-   public boolean isBlocked() {
-        return blocked;
-    }
-} 
+
+}

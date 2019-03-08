@@ -17,7 +17,7 @@ public class BankDatabase {
         return accounts;
     }
 
-    private Account getAccount(int accountNumber) {
+    public Account getAccount(int accountNumber) {
         for (Account x : this.accounts) {
             if (x.getAccountNumber() == accountNumber) {
                 return x;
