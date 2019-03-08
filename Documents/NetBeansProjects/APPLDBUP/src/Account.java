@@ -12,18 +12,20 @@ public class Account {
     private boolean blocked;
     private boolean admin;
 
-    private ArrayList<History> histories;
-    
-    public Account(int accountNumber, int pin, double availableBalance, double totalBalance, boolean blocked, boolean admin, ArrayList<History> histories) {
-        this.accountNumber = accountNumber;
-        this.pin = pin;
-        this.availableBalance = availableBalance;
-        this.totalBalance = totalBalance;
-        this.blocked = blocked;
-        this.admin = admin;
-        this.histories = histories;
-    }
+    // Account constructor initializes attributes
+    public Account(int theAccountNumber, int thePIN,
+            double theAvailableBalance, double theTotalBalance, boolean admin) {
+        accountNumber = theAccountNumber;
+        pin = thePIN;
+        availableBalance = theAvailableBalance;
+        totalBalance = theTotalBalance;
+        if (admin) {
+            blocked = false;
+        } else {
+            blocked = true;
+        }
 
+        this.admin = admin;
 
     // Account constructor initializes attributes
     public Account(int theAccountNumber, int thePIN,
@@ -41,7 +43,7 @@ public class Account {
         if (userPIN == pin) {
             return true;
         } else {
-            return true;
+            return false;
         }
     }
 

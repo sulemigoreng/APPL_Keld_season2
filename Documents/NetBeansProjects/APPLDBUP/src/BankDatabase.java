@@ -87,5 +87,88 @@ public class BankDatabase {
    }
 }
 
+    private Account getAccount(int accountNumber) {
+        for (Account x : this.accounts) {
+            if (x.getAccountNumber() == accountNumber) {
+                return x;
+            }
+        }
+        return null; // if no matching account was found, return null
+    }
+    
+    public boolean isExists(int accountNumber) {
+        for (Account x : this.accounts) {
+            if (x.getAccountNumber() == accountNumber) {
+                return true;
+            }
+        }
+        return false; // if no matching account was found, return null
+    }
+    
+    public Account[] getAccounts(){
+        return accounts;
+    }
+
+    public Account getAccountUser(int accountNumber) {
+        for (Account x : this.accounts) {
+            if (x.getAccountNumber() == accountNumber) {
+                return x;
+            }
+        }
+        return null; // if no matching account was found, return null
+    }
+    
+    public boolean authenticateUser(int userAccountNumber, int userPIN) {
+        // attempt to retrieve the account with the account number
+        Account userAccount = getAccount(userAccountNumber);
+
+        // if account exists, return result of Account method validatePIN
+        if (userAccount != null) {
+            return userAccount.validatePIN(userPIN);
+        } else {
+            return false; // account number not found, so return false
+        }
+    }
+
+    public boolean isAdmin(int accountNumber) {
+        for (Account x : this.accounts) {
+            if (x.getAccountNumber() == accountNumber) {
+                return x.getAdmin();
+            }
+        }
+        return false; // if no matching account was found, return null
+    }
+
+    public double getAvailableBalance(int userAccountNumber) {
+        return getAccount(userAccountNumber).getAvailableBalance();
+    }
+
+    public double getTotalBalance(int userAccountNumber) {
+        return getAccount(userAccountNumber).getTotalBalance();
+    }
+
+    public void credit(int userAccountNumber, double amount) {
+        getAccount(userAccountNumber).credit(amount);
+    }
+
+    public void debit(int userAccountNumber, double amount) {
+        getAccount(userAccountNumber).debit(amount);
+    }
+
+    public void unblock(int userAccountNumber) {
+        getAccount(userAccountNumber).unblock();
+    }
+    
+    public void addAccount(int userAccountNumber, int userAccountPIN){
+        boolean stop = false;
+        int i = 0;
+        while (!stop){
+            if (accounts[i].equals(null)){
+                accounts[i] = new Account(userAccountNumber, userAccountPIN, 0, 0, false);
+                stop = true;
+            }
+        }
+    }
+}
    
    
