@@ -84,7 +84,7 @@ public class ATM {
 
         // check whether authentication succeeded
         if (accountUserBlocked != null) {
-            accountUserBlocked.unblock();
+            accountUserBlocked.setBlocked(false);
             screen.displayMessageLine("That account has been Unblocked");
         } else {
             screen.displayMessageLine(

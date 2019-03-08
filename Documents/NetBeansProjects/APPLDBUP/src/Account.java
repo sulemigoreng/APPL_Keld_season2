@@ -1,7 +1,5 @@
 
-
 import java.util.ArrayList;
-
 
 public class Account {
 
@@ -11,10 +9,11 @@ public class Account {
     private double totalBalance; // funds available & pending deposits
     private boolean blocked;
     private boolean admin;
+    private ArrayList<History> histories;
 
     // Account constructor initializes attributes
     public Account(int theAccountNumber, int thePIN,
-            double theAvailableBalance, double theTotalBalance, boolean admin) {
+            double theAvailableBalance, double theTotalBalance,boolean blocked, boolean admin, ArrayList<History> histories) {
         accountNumber = theAccountNumber;
         pin = thePIN;
         availableBalance = theAvailableBalance;
@@ -24,19 +23,10 @@ public class Account {
         } else {
             blocked = true;
         }
-
-        this.admin = admin;
-
-    // Account constructor initializes attributes
-    public Account(int theAccountNumber, int thePIN,
-            double theAvailableBalance, double theTotalBalance, boolean admin) {
-        accountNumber = theAccountNumber;
-        pin = thePIN;
-        availableBalance = theAvailableBalance;
-        totalBalance = theTotalBalance;
-        blocked = false;
+        this.histories = histories;
         this.admin = admin;
     }
+    // Account constructor initializes attributes
 
     // determines whether a user-specified PIN matches PIN in Account
     public boolean validatePIN(int userPIN) {
@@ -56,42 +46,45 @@ public class Account {
     public double getTotalBalance() {
         return totalBalance;
 
-    }    
-    
+    }
+
     public void credit(double amount) {
         availableBalance -= amount;
         totalBalance -= amount;
-        addHistory(1, amount,null);
+        addHistory(1, amount, null);
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
     }
     
-    public void validated(double amount){
+    public void validated(double amount) {
         availableBalance += amount;
     }
-    
+
     public void debit(double amount, Deposit x) {
         totalBalance += amount;
-        addHistory(2, amount,x);
+        addHistory(2, amount, x);
     }
-    
+
     public void transfer(double amount) {
         availableBalance += amount;
         totalBalance += amount;
     }
-    
+
     public int getAccountNumber() {
-        return accountNumber;        
+        return accountNumber;
 
     }
-
 
     public boolean getAdmin() {
-        return admin;        
+        return admin;
     }
-    
+
     public ArrayList<History> getHistories() {
         return histories;
     }
-    
+
     public void addHistory(int transaction, double amount, Deposit x) {
         String keterangan = null;
         if (transaction == 1) {
@@ -101,7 +94,6 @@ public class Account {
             keterangan = "Deposit";
             this.histories.add(new History(keterangan, amount, x));
         }
-        
 
     }
 }
