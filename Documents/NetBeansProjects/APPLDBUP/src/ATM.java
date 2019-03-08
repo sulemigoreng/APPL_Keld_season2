@@ -23,6 +23,9 @@ public class ATM {
 
     private static final int HISTORY = 6;
     private static final int CHANGEPIN = 4;
+    private static final int EXIT = 7;
+    private static final int DISPLAY_DISPENSER = 3;
+    private static final int ADD_DISPENSER = 4;
 
     // no-argument ATM constructor initializes instance variables
     public ATM() {
@@ -30,7 +33,7 @@ public class ATM {
         currentAccountNumber = 0; // no current account number to start
         screen = new Screen(); // create screen
         keypad = new Keypad(); // create keypad 
-        cashDispenser = new CashDispenser(); // create cash dispenser
+        cashDispenser = new CashDispenser(screen); // create cash dispenser
         bankDatabase = new BankDatabase(); // create acct info database
         ATMDepositSlot = new DepositSlot();
         admin = false;
@@ -170,6 +173,15 @@ public class ATM {
                         addUser();
                         break;
                     case 6: // user chose to terminate session
+                    case DISPLAY_DISPENSER:
+                        cashDispenser.displayDispenser();
+                        break;
+                    case ADD_DISPENSER:
+                        screen.displayMessage("Please insert a number to cash dispenser : ");
+                        double tambah = keypad.getInput();
+                        cashDispenser.addCashDispenser(tambah);
+                        break;
+                    case EXIT: // user chose to terminate session
                         screen.displayMessageLine("\nExiting the system...");
                         userExited = true; // this ATM session should end
                         break;
