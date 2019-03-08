@@ -1,7 +1,6 @@
 
 import java.util.ArrayList;
 
-public class ATM {
 
 public class ATM {
     
@@ -228,18 +227,6 @@ public class ATM {
                     case CHANGEPIN:
                         currentTransaction = createTransaction(mainMenuSelection);
                         currentTransaction.execute();
-                        break;
-                    case HISTORY:
-                        ArrayList<History> histories = bankDatabase.getHistories(currentAccountNumber);
-                        if (histories != null) {
-                            for (History history : histories) {
-                                screen.displayMessage(history.getKeterangan() + " ");
-                                screen.displayDollarAmount(history.getAmount());
-                                screen.displayMessageLine("");
-                            }
-                        } else {
-                            screen.displayMessageLine("You don't have any previous transaction..");
-                        }
                         break;
                     case TRANSFER:
                         currentTransaction
