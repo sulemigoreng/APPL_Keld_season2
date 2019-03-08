@@ -23,7 +23,6 @@ public class ATM {
 
     private static final int HISTORY = 6;
     private static final int CHANGEPIN = 4;
-    private static final int EXIT = 7;
     private static final int DISPLAY_DISPENSER = 3;
     private static final int ADD_DISPENSER = 4;
 
