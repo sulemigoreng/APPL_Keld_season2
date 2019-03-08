@@ -11,6 +11,7 @@ public class ATM {
     private BankDatabase bankDatabase; // account information database
     private DepositSlot ATMDepositSlot;
     private boolean admin;
+    private Account acc;
 
     // constants corresponding to main menu options
     private static final int BALANCE_INQUIRY = 1;
@@ -21,6 +22,8 @@ public class ATM {
     private static final int EXIT = 7;
 
     private static final int HISTORY = 6;
+    private static final int CHANGEPIN = 4;
+    private static final int EXIT = 6;
 
     // no-argument ATM constructor initializes instance variables
     public ATM() {
@@ -44,29 +47,64 @@ public class ATM {
                 authenticateUser(); // authenticate user
             }
 
-            performTransactions(); // user is now authenticated
-            userAuthenticated = false; // reset before next ATM session
-            currentAccountNumber = 0; // reset before next ATM session
-            screen.displayMessageLine("\nThank you! Goodbye!");
+            if (!acc.isBlocked()) {
+                performTransactions(); // user is now authenticated
+                userAuthenticated = false; // reset before next ATM session
+                currentAccountNumber = 0; // reset before next ATM session
+                screen.displayMessageLine("\nThank you! Goodbye!");
+            }
+
+            authenticateUser();
+
         }
     }
 
     // attempts to authenticate user against database
     private void authenticateUser() {
+
+        int i = 1;
         screen.displayMessage("\nPlease enter your account number: ");
         int accountNumber = keypad.getInput(); // input account number
-        screen.displayMessage("\nEnter your PIN: "); // prompt for PIN
+        screen.displayMessage("Enter your PIN: "); // prompt for PIN
         int pin = keypad.getInput(); // input PIN
+        i++;
 
-        // set userAuthenticated to boolean value returned by database
-        userAuthenticated
-                = bankDatabase.authenticateUser(accountNumber, pin);
+        acc = bankDatabase.getAccount(accountNumber);
 
         // check whether authentication succeeded
         if (userAuthenticated) {
             currentAccountNumber = accountNumber; // save user's account #
             admin = bankDatabase.isAdmin(accountNumber);
         } else {
+        if (acc != null) {
+            userAuthenticated = bankDatabase.authenticateUser(accountNumber, pin);
+
+            while (!userAuthenticated && i <= 3 && !acc.isBlocked()) {
+
+                //while(i <= 3){
+//                screen.displayMessageLine("You input the wrong account number or PIN");
+//                screen.displayMessage("\nPlease enter your account number: ");
+//                accountNumber = keypad.getInput(); // input account number
+                screen.displayMessage("Enter your PIN: "); // prompt for PIN
+                pin = keypad.getInput(); // input PIN
+
+                userAuthenticated = bankDatabase.authenticateUser(accountNumber, pin);
+                i++;
+                //}
+
+            }
+
+            if (i > 3) {
+                //Account acc = bankDatabase.getAccount(accountNumber);
+                screen.displayMessageLine("Sorry, your account has been blocked..");
+                acc.setBlocked(true);
+            }
+
+            // check whether authentication succeeded
+            if (userAuthenticated) {
+                currentAccountNumber = accountNumber; // save user's account #
+            }
+        } else if(acc == null) {
             screen.displayMessageLine(
                     "Invalid account number or PIN. Please try again.");
         }
@@ -166,6 +204,8 @@ public class ATM {
                                 = createTransaction(mainMenuSelection);
                         currentTransaction.execute();
                         break;
+                    case CHANGEPIN:
+                        currentTransaction = createTransaction(mainMenuSelection);
                     case HISTORY:
                         ArrayList<History> histories = bankDatabase.getHistories(currentAccountNumber);
                         if (histories != null) {
@@ -226,6 +266,9 @@ public class ATM {
             screen.displayMessageLine("3 - Deposit funds");
             screen.displayMessageLine("5 - Transfer");
             screen.displayMessageLine("7 - Exit\n");
+            screen.displayMessageLine("4 - Change PIN");
+            screen.displayMessageLine("6 - Exit\n");
+
             screen.displayMessage("Enter a choice: ");
         } else {
             screen.displayMessageLine("\nMain menu:");
@@ -254,6 +297,9 @@ public class ATM {
                 break;
             case TRANSFER:
                 temp = new Transfer(currentAccountNumber, screen, bankDatabase, keypad);
+
+            case CHANGEPIN:
+                temp = new UbahPIN(currentAccountNumber, screen, bankDatabase, keypad);
                 break;
         }
 

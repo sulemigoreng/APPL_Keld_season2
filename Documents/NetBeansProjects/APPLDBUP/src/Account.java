@@ -27,6 +27,15 @@ public class Account {
         this.admin = admin;
     }
     // Account constructor initializes attributes
+   // determines whether a user-specified PIN matches PIN in Account
+   public boolean validatePIN(int userPIN) {
+      if (userPIN == pin) {
+         return true;
+      }
+      else {
+         return false;
+      }
+   } 
 
     // determines whether a user-specified PIN matches PIN in Account
     public boolean validatePIN(int userPIN) {
@@ -97,3 +106,22 @@ public class Account {
 
     }
 }
+   public int getAccountNumber() {
+      return accountNumber;  
+   }
+   public boolean getAdmin() {
+      return admin;  
+   }
+   
+   public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+   
+   public void setPin(int pin) {
+        this.pin = pin;
+    }
+   
+   public boolean isBlocked() {
+        return blocked;
+    }
+} 
