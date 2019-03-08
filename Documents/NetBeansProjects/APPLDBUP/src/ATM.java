@@ -3,6 +3,8 @@ import java.util.ArrayList;
 
 public class ATM {
 
+public class ATM {
+    
     private boolean userAuthenticated; // whether user is authenticated
     private int currentAccountNumber; // current user's account number
     private Screen screen; // ATM's screen
@@ -149,7 +151,7 @@ public class ATM {
     private void performTransactions() {
         // local variable to store transaction currently being processed
         Transaction currentTransaction = null;
-
+        
         boolean userExited = false; // user has not chosen to exit
 
         // loop while user has not chosen option to exit system
@@ -204,12 +206,24 @@ public class ATM {
                         currentTransaction
                                 = createTransaction(mainMenuSelection);
                         currentTransaction.execute();
-
+                        
                         break;
                     case DEPOSIT:
                         currentTransaction
                                 = createTransaction(mainMenuSelection);
                         currentTransaction.execute();
+                        break;
+                    case HISTORY:
+                        ArrayList<History> histories = bankDatabase.getHistories(currentAccountNumber);
+                        if (histories != null) {
+                            for (History history : histories) {
+                                screen.displayMessage(history.getKeterangan() + " ");
+                                screen.displayDollarAmount(history.getAmount());
+                                screen.displayMessageLine("");
+                            }
+                        } else {
+                            screen.displayMessageLine("You don't have any previous transaction..");
+                        }
                         break;
                     case CHANGEPIN:
                         currentTransaction = createTransaction(mainMenuSelection);
@@ -291,7 +305,7 @@ public class ATM {
         }
         return keypad.getInput(); // return user's selection
     }
-
+    
     private Transaction createTransaction(int type) {
         Transaction temp = null;
         switch (type) {
@@ -311,7 +325,7 @@ public class ATM {
                 temp = new UbahPIN(currentAccountNumber, screen, bankDatabase, keypad);
                 break;
         }
-
+        
         return temp;
     }
 }
